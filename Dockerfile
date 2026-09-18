@@ -1,20 +1,12 @@
-FROM ubuntu:24.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        wget \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY run_1_local_ubuntu.sh /app/
-COPY 1_rhel.py /app/
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-RUN chmod +x /app/run_1_local_ubuntu.sh
+COPY 1_rhel.py /app/1_rhel.py
 
-CMD ["/app/run_1_local_ubuntu.sh"]
+RUN python -m py_compile /app/1_rhel.py
+
+CMD ["python", "-u", "/app/1_rhel.py"]
